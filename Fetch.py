@@ -12,24 +12,24 @@ STATUS_SUCCESS = 1
 STATUS_FAILURE = -1
 
 # DOWNLOAD SYMBOL AND MAKE(SAVE) CSV
-def Fetch(symbol=SYMBOL, start=START,end = END, interval = INTERVAL):
+def Fetch(symbol=SYMBOL,interval = INTERVAL, **kwargs):
     try:
-        ticket = yf.download(SYMBOL, start=START,end=END, interval=INTERVAL)
+        ticket = yf.download(tickers=SYMBOL, interval=INTERVAL, **kwargs)
         if(ticket.empty): # dam they have empty
             return STATUS_FAILURE
         # Save
         ticket.to_csv(f"{SYMBOL}.csv")
-        print(f"Saved to {SYMBOL}.csv")
+        print(f"Saved to {SYMBOL}.csv \n Written {ticket.shape}")
         return ticket
     except Exception as ex:
-        print(f"While trying to download symbol : {ex}")
+        print(f"While trying to download {symbol} : {ex}")
         return STATUS_FAILURE
 
 
 # USE THAT CSV AND SORT TO OHLCV ORDER
 def ReadCSV(symbol=SYMBOL):
     df = pandas.read_csv(f"{SYMBOL}.csv", skiprows=3)
-    df.columns = ["Date", "Open", "Close", "High", "Low", "Volume"]
+    df.columns = ["Date", "Close", "High", "Low", "Open", "Volume"]
     df["Date"] = pandas.to_datetime(df["Date"])
     df.set_index(df["Date"], inplace=True)
     df = df[["Open", "High", "Low", "Close", "Volume"]]  # ensure column order

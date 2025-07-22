@@ -45,10 +45,11 @@ def AutoCorr(OHLCV, field = "Close", lag = 21):
     plt.show()
 
 def RemoveResiduals(OHLCV, field = "Close", period = 30, show = True):
-    seasonal, trend, residuals = Decompose(OHLCV, field)
+    seasonal, trend, residuals = Decompose(OHLCV, field, show=False)
 
     new_series = pd.Series(seasonal + trend, index=OHLCV.index)
-    new_series.plot()
+    new_series.index = OHLCV.index
     if show:
+        new_series.plot()   
         plt.show()
     return new_series
