@@ -3,3 +3,4 @@ __pycache__/Alter.cpython-311.pyc
 __pycache__/Decomposition.cpython-311.pyc
 __pycache__/Fetch.cpython-311.pyc
 __pycache__/Display.cpython-311.pyc
+*.csv

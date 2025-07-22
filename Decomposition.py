@@ -5,7 +5,7 @@ from statsmodels.tsa.stattools import adfuller
 from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
-def Decompose(OHLCV, field, period = 30, show=True):
+def Decompose(OHLCV, field='Close', period = 30, show=True):
     stl = STL(OHLCV[field], period=period, robust=True)
     results = stl.fit()
 
@@ -17,8 +17,6 @@ def Decompose(OHLCV, field, period = 30, show=True):
         results.plot()
         plt.show()
     return seasonal, trend, residuals
-
-
 
 def IsWhiteNoise(OHLCV, field = "Close"):
     seasonal, trend, residuals = Decompose(OHLCV, field, show=False)
@@ -50,6 +48,7 @@ def RemoveResiduals(OHLCV, field = "Close", period = 30, show = True):
     new_series = pd.Series(seasonal + trend, index=OHLCV.index)
     new_series.index = OHLCV.index
     if show:
-        new_series.plot()   
+        new_series.plot()
+        plt.title('Without Residual Plot')   
         plt.show()
     return new_series

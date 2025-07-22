@@ -175,11 +175,11 @@ def CompareAgainstIndex(OHLCV, INDEX, datefrom, dateto):
     index_domain = INDEX['Close'][datefrom : dateto]
     symbol_domain = OHLCV['Close'][datefrom : dateto]
     # since both are going to be having different prices, let us compare percent chagne rather 
-    index_domain = index_domain.pct_change().fillna(0) * 100 # i dont like decimals
-    symbol_domain = symbol_domain.pct_change().fillna(0) * 100 
+    index_domain = (index_domain - index_domain.iloc[0])/ index_domain.iloc[0] * 100 # i dont like decimals
+    symbol_domain = (symbol_domain - symbol_domain.iloc[0])/ symbol_domain.iloc[0] * 100 
 
-    plt.plot(index_domain, label = 'Index Change %', color = 'green')
-    plt.plot(symbol_domain, label = 'Symbol Chanfe %', color = 'blue')
+    plt.plot(index_domain, label = 'Index Change %', color = 'green', linewidth = 1.5, linestyle='-.')
+    plt.plot(symbol_domain, label = 'Symbol Change %', color = 'blue', alpha=0.2)
     plt.legend()
     plt.grid(True)
     plt.title('Index vs Symbol')
