@@ -1,0 +1,7 @@
+Things to add in free time:
+
+better support for MF with NAVs only
+support for multiple trade/portfolio
+manual cuz i keep forgetting stuffs
+better compatibility of different parameters other than Close
+

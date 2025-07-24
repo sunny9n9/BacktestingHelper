@@ -130,11 +130,17 @@ df_gold = df_gold.iloc[::-1]
 df_gold['Date'] = pandas.to_datetime(df_gold['Date'], dayfirst=True)
 df_gold.set_index('Date', inplace=True)
 print(df_gold.head(6))
-# Display.Overview(df_gold, 'NAV')
+Display.Overview(df_gold, 'NAV')
 df_gold['Close'] = df_gold['NAV']
-Decomposition.Decompose(df_gold)
-# Decomposition.IsStationary(df_gold)
+# Decomposition.Decompose(df_gold)
+Decomposition.IsStationary(df_gold)
 # Decomposition.IsWhiteNoise(df_gold)
+
+# no need, already stationary
+# df_gold['Differenced'] = df_gold['Close'] - df_gold['Close'].shift(32) # approx 1.5 month
+# df_gold = df_gold.dropna(subset=['Differenced'])
+# Decomposition.IsStationary(df_gold, 'Differenced')
+
 df_gold_non_residual = Decomposition.RemoveResiduals(df_gold, show=False)
 # plt.plot(df_gold, label='NAVs')
 # plt.plot(df_gold_non_residual, label='Non Residual')
@@ -142,4 +148,4 @@ df_gold_non_residual = Decomposition.RemoveResiduals(df_gold, show=False)
 # plt.grid(True)
 # plt.show()
 
-Display.CompareAgainstIndex(df_gold, df,'2021-01-02', '2025-07-22')
+Display.CompareAgainstIndex(df_gold, df,'2013-01-02', '2025-07-22')

@@ -20,8 +20,10 @@ def Decompose(OHLCV, field='Close', period = 30, show=True):
 
 def IsWhiteNoise(OHLCV, field = "Close"):
     seasonal, trend, residuals = Decompose(OHLCV, field, show=False)
-    lb_result = acorr_ljungbox(residuals.dropna(), lags=[10], return_df=True)
-    print(lb_result)
+    result_lag10 = acorr_ljungbox(residuals.dropna(), lags=[10], return_df=True)
+    result_lag15 = acorr_ljungbox(residuals.dropna(), lags=[15], return_df=True)
+    result_lag20 = acorr_ljungbox(residuals.dropna(), lags=[20], return_df=True)
+    print(f"{result_lag10}, {result_lag15}, {result_lag20} for 10-15-20 p Value < 0.05 ie Not White Noise")
 
 def IsStationary(OHLCV, field = "Close"):
     sesonal, trend, residuals = Decompose(OHLCV, field, show=False)
