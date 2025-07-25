@@ -1,3 +1,4 @@
+# Old Trade Classs' Buy and Sell logic
 class BuyLogic:
     def __init__(self):
         self.has_been_30 = False
@@ -13,7 +14,6 @@ class BuyLogic:
             self.has_been_30 = False
             return True
         return False
-    
 
 class SellLogic:
     def __init__(self):

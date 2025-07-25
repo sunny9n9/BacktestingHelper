@@ -1,3 +1,4 @@
+# STL Decomposition and other time series tools useful
 from statsmodels.tsa.seasonal import STL
 import pandas as pd
 import matplotlib.pyplot as plt

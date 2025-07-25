@@ -10,7 +10,7 @@ import Infer
 import Trade
 import seaborn
 # ticket = Fetch.Fetch("NIFTYBEES.NS", period='max')
-df_etf = Fetch.ReadCSV("NIFTYBEES.NS.csv")
+df_etf = Fetch.ReadCSV("NIFTYBEES.NS")
 df_etf = df_etf["2019-01-02" : ]
 # exit(3)
 df = Fetch.ReadCSV("^NSEI")
@@ -96,21 +96,21 @@ df['ATR'] = Alter.AvgTrueRange(df, 12)
 df['RSI'] = Alter.RelativeStrengthIndex(df, 12)
 df['ADX'] = Alter.AverageDirIdx(df, 12)
 
-# class SimplerBuyLogic:
-#     def __call__(self, OHLC, i):
-#         return (94/100)*(OHLC['NonResidual'].iloc[i]) > OHLC['Close'].iloc[i]
+class SimplerBuyLogic:
+    def __call__(self, OHLC, i):
+        return (94/100)*(OHLC['NonResidual'].iloc[i]) > OHLC['Close'].iloc[i]
 
-# class SimplerSellLogic:
-#     def __call__(self, OHLC, i):
-#         return OHLC['Close'].iloc[i] > (94/100)*(OHLC['NonResidual'].iloc[i])
+class SimplerSellLogic:
+    def __call__(self, OHLC, i):
+        return OHLC['Close'].iloc[i] > (94/100)*(OHLC['NonResidual'].iloc[i])
         
 
 # buy_logic = SimplerBuyLogic()
 # sell_logic = SimplerSellLogic()
-# trial = Trade.Trade(df, 1000, 4, buy_logic=buy_logic, sell_logic=sell_logic, infinite_sell=False)
-# trial.run()
-# trial.report()
-# trial.plot_trades(overlay=False)
+trial = Trade.Trade(df, 1000, 4, infinite_sell=False)
+trial.run()
+trial.report()
+trial.plot_trades(overlay=False)
 
 # plt.plot(df['Close'])
 # plt.plot(df['EMA17'], color='green', linewidth='0.7', label='EMA17')
@@ -130,7 +130,7 @@ df_gold = df_gold.iloc[::-1]
 df_gold['Date'] = pandas.to_datetime(df_gold['Date'], dayfirst=True)
 df_gold.set_index('Date', inplace=True)
 print(df_gold.head(6))
-Display.Overview(df_gold, 'NAV')
+# Display.Overview(df_gold, 'NAV')
 df_gold['Close'] = df_gold['NAV']
 # Decomposition.Decompose(df_gold)
 Decomposition.IsStationary(df_gold)

@@ -1,6 +1,8 @@
+# For downloading and loading data to dataframes
 import yfinance as yf
 import pandas
 import requests
+import re
 
 # Macros for what to fetch
 SYMBOL = "^NSEI"
@@ -16,28 +18,60 @@ STATUS_FAILURE = -1
 URL = "https://api.mfapi.in/mf"
 URL_ALT = "https://www.amfiindia.com/spages/NAVAll.txt"
 
-# DOWNLOAD SYMBOL AND MAKE(SAVE) CSV
-def Fetch(symbol=SYMBOL,interval = INTERVAL, **kwargs):
+# Master fetch to fetch all kinds of assets
+def Fetch(name, MF=False, interval=INTERVAL, **kwargs):
+    """
+    name can be name of index/MF 
+    for index, can further use arguments like interval, start, etc as supported by yfinance
+    """
     try:
-        ticket = yf.download(tickers=symbol, interval=INTERVAL, **kwargs)
-        if(ticket.empty): # dam they have empty
-            return STATUS_FAILURE
-        # Save
-        ticket.to_csv(f"{symbol}.csv")
-        print(f"Saved to {symbol}.csv \n Written {ticket.shape}")
-        return ticket
-    except Exception as ex:
-        print(f"While trying to download {symbol} : {ex}")
-        return STATUS_FAILURE
+        if MF:
+            raise TypeError(f'Its a MF')
+        return FetchStock(symbol=name, interval=interval, **kwargs)
+    except Exception as e:
+        try:
+            return FetchMF(name)
+        except Exception as e2:
+            print(f"[Fetch] Failed to fetch '{name}':\nStock error: {e}\nMF error: {e2}")
+            return None
 
+# DOWNLOAD SYMBOL AND MAKE(SAVE) CSV
+def FetchStock(symbol=SYMBOL, interval = INTERVAL, save_csv = True, **kwargs):
+    try:
+        df = yf.download(tickers=symbol, interval=interval, **kwargs)
+
+        if df.empty:
+            print(f"[FetchStock] No data returned for '{symbol}' "f"(interval={interval}, {kwargs})")
+            return None
+
+        if save_csv:
+            filename = f"{symbol}.csv"
+            df.to_csv(filename, index=True)
+            print(f"[FetchStock] Saved to {filename} "f"({df.shape[0]} rows x {df.shape[1]} cols)")
+        return df
+
+    except Exception as e:
+        print(f"[FetchStock] Error downloading '{symbol}': {e}")
+        return None
 
 # USE THAT CSV AND SORT TO OHLCV ORDER
-def ReadCSV(symbol=SYMBOL):
-    df = pandas.read_csv(f"{SYMBOL}.csv", skiprows=3)
-    df.columns = ["Date", "Close", "High", "Low", "Open", "Volume"]
-    df["Date"] = pandas.to_datetime(df["Date"])
-    df.set_index(df["Date"], inplace=True)
-    df = df[["Open", "High", "Low", "Close", "Volume"]]  # ensure column order
+def ReadCSV(name=SYMBOL):
+    df = pandas.DataFrame()
+    if re.match(r'^\d', name): # it means its a mutual fund    
+        # print('MutualFundConfirmed')
+        df = pandas.read_csv(f'{name}.csv', skiprows=1)
+        # df = df.sort_index(ascending=True)
+        df.columns = ['Date', 'Close']
+        df['Date'] = pandas.to_datetime(df['Date'])
+        df.set_index("Date", inplace=True, drop=True)
+        df = df.iloc[::-1]
+
+    else: # i will assume its a standard stock
+        df = pandas.read_csv(f"{name}.csv", skiprows=3)
+        df.columns = ["Date", "Close", "High", "Low", "Open", "Volume"]
+        df["Date"] = pandas.to_datetime(df["Date"])
+        df.set_index(df["Date"], inplace=True)
+        df = df[["Open", "High", "Low", "Close", "Volume"]]  # ensure column order
 
     return df
 
@@ -58,6 +92,7 @@ def _save_history(scheme):
 
     df.to_csv(out_file, index=False)
     print(f"Saved {len(df)} NAV records to {out_file}")
+    return df
 
 def FetchMF(name):
     try:
@@ -103,4 +138,5 @@ def FetchMF(name):
 
     scheme = matches[0]
     print(f"Found 1 match: {scheme['schemeName']} (Code: {scheme['schemeCode']})\n")
-    _save_history(scheme)
+    return _save_history(scheme)
+    

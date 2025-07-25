@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import Alter
-import Decomposition
+import Folio
+import pandas
 
 def default_buy_logic(OHLC, i):
     return False  # Never buys
@@ -93,8 +94,6 @@ class Trade:
 
         # clear positions
         self.positions = []
-
-
         
     def report(self):
         assert isinstance(self.cash, (int, float)), f"Cash is wrong type: {type(self.cash)}"
@@ -116,3 +115,45 @@ class Trade:
         plt.legend()
         plt.grid(True)
         plt.show()
+
+class MasterTrade:
+    def __init__(self):
+        self.portfolio = dict()
+
+    def Add(self, portfolio_name, portfolio):
+        if portfolio_name not in [k for k, v in self.portfolio.items()]:
+            self.portfolio[portfolio_name] = portfolio
+        else:
+            print(f'A portfolio of same name "{portfolio_name}" already exists')
+    
+    def Del(self, portfolio_name):
+        if portfolio_name not in self.portfolio:
+            print(f'No portfolio by the name of {portfolio_name} found')
+        else:
+            self.portfolio.pop(portfolio_name)
+    
+    def Emulate(self, start, end):
+        current = pandas.to_datetime(start)
+        end = pandas.to_datetime(end)
+
+        while current <= end:
+            for portfolio in self.portfolio.values():
+                for holding in portfolio.holdings.values():
+                    df = holding.underlying_asset
+
+                    if current not in df.index:
+                        continue
+
+                    idx = df.index.get_loc(current)
+                    price = df.at[current, 'Close'] # .at for fast access within dataframe
+
+                    qty = int(portfolio.cash // price)
+                    if qty > 0 and holding.buy_signal(idx):
+                        portfolio.Debit(qty * price)
+                        holding.Buy(idx, qty, price)
+                    elif holding.sell_signal(idx) and holding.quantity > 0:
+                        proceeds = holding.quantity * price
+                        holding.Sell(idx, "ALL", price)
+                        portfolio.Credit(proceeds)
+
+            current += pandas.Timedelta(days=1)

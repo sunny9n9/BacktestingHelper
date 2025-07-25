@@ -1,3 +1,6 @@
+# Contains Signals/Indicators for use.
+# Can be added as a column to OHLCV chart
+import pandas as pd
 import pandas
 
 def PercentChange(OHLCV : pandas.DataFrame):
@@ -47,7 +50,6 @@ def AvgTrueRange(OHLCV, period = 14):
     atr = true_range.ewm(alpha=1/period, adjust=False).mean()
 
     return atr
-    
 
 def RelativeStrengthIndex(OHLCV, period = 14):
     close_prices = OHLCV['Close']
@@ -61,7 +63,6 @@ def RelativeStrengthIndex(OHLCV, period = 14):
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
     return rsi
-import pandas as pd
 
 # INTENED USE : TO COMPLIMENT RSI WHEN DECIDING TO BUY/SELL
 # ADX > 25 FOR CONFIRMATIONN

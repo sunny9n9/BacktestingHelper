@@ -1,3 +1,4 @@
+# For Plotting different Scenariod
 import pandas
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -61,7 +62,7 @@ def PlotChange(OHLCV):
     plt.tight_layout()
     plt.show()
 
-
+# DAY CHANGE
 def PlotChange2(OHLCV):
     day_to_day = OHLCV['Close'].pct_change().fillna(0) * 100
     # print(day_to_day.min(), day_to_day.max())

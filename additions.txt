@@ -4,4 +4,7 @@ better support for MF with NAVs only
 support for multiple trade/portfolio
 manual cuz i keep forgetting stuffs
 better compatibility of different parameters other than Close
-
+intraday support
+make a single Fetch to fetch all kinds of assets {kind of done}
+print better errors
+make ReadCSV work with mf coode only
