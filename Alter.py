@@ -1,7 +1,12 @@
 # Contains Signals/Indicators for use.
-# Can be added as a column to OHLCV chart
-import pandas as pd
+# Can be added as a column to OHLCV chart for analysis
 import pandas
+
+__all__ = [
+    'PercentChange', 'IntradayPercentChange', 'IntradayPeaktoPeak', 'AddDayData',
+    'MovingAvg', 'ExpMovingAvg', 'TrueRange', 'AvgTrueRange', 'RelativeStrengthIndex',
+    'AvgDirIndex'
+]
 
 def PercentChange(OHLCV : pandas.DataFrame):
     SinceLastClose : pandas.Series = OHLCV["Close"].pct_change().fillna(0) * 100
@@ -66,7 +71,7 @@ def RelativeStrengthIndex(OHLCV, period = 14):
 
 # INTENED USE : TO COMPLIMENT RSI WHEN DECIDING TO BUY/SELL
 # ADX > 25 FOR CONFIRMATIONN
-def AverageDirIdx(OHLCV, period=14):
+def AvgDirIndex(OHLCV, period=14):
     alpha = 1/period
     
     df = OHLCV.copy()
@@ -94,4 +99,10 @@ def AverageDirIdx(OHLCV, period=14):
     df['adx'] = df['dx'].ewm(alpha=alpha, adjust=False).mean()
 
     return df['adx']
+
+def ChangeFromRecentPeak(OHLCV, peak_pct):
+    # first identify peak and trough
+    # then calculate changes from there till next one
+    # starting at very initial index
+    curr_peak = OHLCV.index[0]
 

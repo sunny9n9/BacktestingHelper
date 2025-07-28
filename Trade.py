@@ -1,7 +1,12 @@
+# Trade class is old one, i doubt it is still working, MasterTrade is the new trade
+# class intended to manage multiple portfolios for comparision
+# need better query for summarised output
 import matplotlib.pyplot as plt
 import Alter
 import Folio
 import pandas
+
+__all__ = ['MasterTrade', 'Trade']
 
 def default_buy_logic(OHLC, i):
     return False  # Never buys
@@ -51,8 +56,6 @@ class Trade:
             assert isinstance(self.cash, (int, float)), f"Cash is wrong type: {type(self.cash)}"
             self.buy_points.append(date)
             self.total_transactions += 1
-        # else:
-        #     print(f"potential buy missed at {date}")
 
     def sell(self, price, date):
         if self.positions:
@@ -69,7 +72,6 @@ class Trade:
             self.sell_points.append(date)
             self.sell_time_cash.append(self.cash)
             self.total_transactions += 1
-            # print(f"selling initialised, sell pint {len(self.sell_points)} and sell val {len(self.sell_time_cash)}")
 
     def run(self):
         for i in range(self.trend_window, len(self.df) - 1):
@@ -119,20 +121,24 @@ class Trade:
 class MasterTrade:
     def __init__(self):
         self.portfolio = dict()
-
+    
     def Add(self, portfolio_name, portfolio):
+        '''Add Portfolio(s) for comparision'''
+
         if portfolio_name not in [k for k, v in self.portfolio.items()]:
             self.portfolio[portfolio_name] = portfolio
         else:
             print(f'A portfolio of same name "{portfolio_name}" already exists')
     
     def Del(self, portfolio_name):
+        '''Remove Portfolio(s) from list'''
         if portfolio_name not in self.portfolio:
             print(f'No portfolio by the name of {portfolio_name} found')
         else:
             self.portfolio.pop(portfolio_name)
-    
-    def Emulate(self, start, end):
+
+    def Emulate(self, start, end, allow_fractions=False):
+        '''Run And Emulate ..... Yeah'''
         current = pandas.to_datetime(start)
         end = pandas.to_datetime(end)
 
@@ -140,20 +146,15 @@ class MasterTrade:
             for portfolio in self.portfolio.values():
                 for holding in portfolio.holdings.values():
                     df = holding.underlying_asset
-
                     if current not in df.index:
                         continue
 
                     idx = df.index.get_loc(current)
-                    price = df.at[current, 'Close'] # .at for fast access within dataframe
+                    price = df.at[current, 'Close']
 
-                    qty = int(portfolio.cash // price)
-                    if qty > 0 and holding.buy_signal(idx):
-                        portfolio.Debit(qty * price)
-                        holding.Buy(idx, qty, price)
-                    elif holding.sell_signal(idx) and holding.quantity > 0:
-                        proceeds = holding.quantity * price
-                        holding.Sell(idx, "ALL", price)
-                        portfolio.Credit(proceeds)
+                    if holding.buy_signal(idx):
+                        portfolio.cash = holding.Buy(idx, price, portfolio.cash, allow_fractions)
+                    elif holding.sell_signal(idx):
+                        portfolio.cash = holding.Sell(idx, price, portfolio.cash, allow_fractions)
 
             current += pandas.Timedelta(days=1)

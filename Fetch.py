@@ -1,4 +1,5 @@
 # For downloading and loading data to dataframes
+# Need crypto support and better Discretion between Stock and MFs
 import yfinance as yf
 import pandas
 import requests
@@ -17,6 +18,10 @@ STATUS_FAILURE = -1
 # MF DATA
 URL = "https://api.mfapi.in/mf"
 URL_ALT = "https://www.amfiindia.com/spages/NAVAll.txt"
+
+__all__ = [
+    'Fetch', 'FetchStock', 'FetchMF', 'ReadCSV'
+]
 
 # Master fetch to fetch all kinds of assets
 def Fetch(name, MF=False, interval=INTERVAL, **kwargs):

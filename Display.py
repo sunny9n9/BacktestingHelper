@@ -1,9 +1,16 @@
-# For Plotting different Scenariod
+# For Plotting different Scenarios
+# Though with time i realise this part is too variable to make functions for
+# will need be updated as time passes and i realise what are common plots i need
 import pandas
 import pandas as pd
 import matplotlib.pyplot as plt
 import mplfinance as mpf
-import plotly.graph_objects as go
+import plotly.graph_objects as go # Should remove this later
+
+__all__ = [
+    'Overview', 'Candle', 'PlotlyCandle', 'PlotChange', 'PlotChange2', 'PlotChange3',
+    'CompareAgainstIndex'
+]
 
 # PLOT A NORMAL LINE CHART TO SEE MOVEMENT
 def Overview(OHLCV, PlotBy, Title="Yeh...plot"):

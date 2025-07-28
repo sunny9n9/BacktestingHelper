@@ -1,10 +1,16 @@
 # STL Decomposition and other time series tools useful
+# Intended to be used for basic analysis of series, not really useful
+# except the residual i think
 from statsmodels.tsa.seasonal import STL
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+__all__ = [
+    'Decompose', 'IsWhiteNoise', 'IsStationary', 'AutoCorr', 'RemoveResiduals'
+]
 
 def Decompose(OHLCV, field='Close', period = 30, show=True):
     stl = STL(OHLCV[field], period=period, robust=True)
