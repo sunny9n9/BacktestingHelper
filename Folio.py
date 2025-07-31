@@ -25,6 +25,7 @@ class Holding:
         self.sell_quantity = []
         self.balances = pandas.Series(dtype=float)
         self.net_profit_loss = 0
+        self.last_buy_portfolio = False
 
         self.buy_signal = buy_signal if buy_signal is not None else self.Default_Buy
         self.sell_signal = sell_signal if sell_signal is not None else self.Default_Sell
@@ -35,7 +36,12 @@ class Holding:
 
     def DefaultBuyQuantity(self, i, price, portfolio_cash, allow_fractions):
         '''How much quantity to buy (default == all)'''
-        pot = self.dedicated_funds if self.dedicated_funds > 0 else portfolio_cash
+        pot = 0
+        if self.dedicated_funds > 0:
+            pot = self.dedicated_funds
+        else:
+            pot = portfolio_cash
+            self.last_buy_portfolio = True
         raw_qty = pot / price
         if not allow_fractions:
             raw_qty = int(raw_qty)
@@ -78,8 +84,8 @@ class Holding:
         else:
             portfolio_cash = 0        # mutates portfolio.cash
         # now record the trade:
-        self.total_invested   += cost
-        self.quantity          += qty
+        self.total_invested += cost
+        self.quantity += qty
         self.buy_price.append(price)
         self.buy_quantity.append(qty)
         self.buy_points.loc[self.underlying_asset.index[i]] = price
@@ -104,10 +110,11 @@ class Holding:
         self.total_invested -= total_cost
         self.last_action = "sell"
 
-        if self.dedicated_funds > 0:
+        if not self.last_buy_portfolio:
             self.dedicated_funds += proceeds
         else:
             portfolio_cash += proceeds
+            self.last_buy_portfolio = False
         print(f'SELL for {price} @total of {total_cost}')
         return portfolio_cash
 
@@ -193,6 +200,7 @@ class Portfolio:
                 holding.dedicated_funds = 0.0
 
     def QueryAll(self, date):
+        '''Query all holdings one by one. Should add a once for all as well'''
         dt = pandas.to_datetime(date)
         for name, holding in self.holdings.items():
             df = holding.underlying_asset

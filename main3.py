@@ -5,8 +5,6 @@ from Folio import *
 from Trade import *
 from Decomposition import *
 from types import MethodType
-# from pycallgraph2 import PyCallGraph
-# from pycallgraph2.output import GraphvizOutput
 
 def CustomBuy(self, i):
     df = self.underlying_asset
@@ -47,7 +45,7 @@ def main():
     # my_portfolio.QueryAll('2024-06-06')
     # my_portfolio.Credit(0)
     # my_portfolio.holdings['Nifty50'].dedicated_funds = 25000
-    my_portfolio.holdings['NiftyETF'].dedicated_funds = 1000
+    # my_portfolio.holdings['NiftyETF'].dedicated_funds = 1000
     # my_portfolio.holdings['BankNifty'].dedicated_funds = 150000
 
     nifty = my_portfolio.holdings['Nifty50']
