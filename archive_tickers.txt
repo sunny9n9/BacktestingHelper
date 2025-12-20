@@ -1,0 +1,86 @@
+SYMBOLS = [
+    '^NSEI',        # nifty50
+    '^CNX100',      # nifty100
+    '^CNX200',      # nifty200
+    '^CRSLDX',      # nifty500
+    '^CNXMIDCAP',   # midcap100
+    '^NSEMDCP50',   # midcap50
+    '^CNXSC',       # smallcap100
+    '^NSESC50',     # smallcap50
+    '^NSEBANK',     # banknifty
+    '^CNXPSUBANK',  # psu_bank
+    '^CNXPRBANK',   # private_bank
+    '^CNXIT',       # it
+    '^CNXAUTO',     # auto
+    '^CNXMETAL',    # metal
+    '^CNXPHARMA',   # pharma
+    '^CNXFMCG',     # fmcg
+    '^CNXENERGY',   # energy
+    '^CNXREALTY',   # realty
+    '^CNXINFRA',    # infra
+    '^CNXFINANCE',  # finance
+    '^CNXMEDIA',    # media
+    '^INDIAVIX'     # indiavix
+]
+
+TABLE_NAMES = [
+    'nifty50',
+    'nifty100',
+    'nifty200',
+    'nifty500',
+    'midcap100',
+    'midcap50',
+    'smallcap100',
+    'smallcap50',
+    'banknifty',
+    'psu_bank',
+    'private_bank',
+    'it',
+    'auto',
+    'metal',
+    'pharma',
+    'fmcg',
+    'energy',
+    'realty',
+    'infra',
+    'finance',
+    'media',
+    'indiavix'
+]
+
+----------------------------------------------------
+
+
+SYMBOLS = [
+    'BANKBEES.NS',     # Banking
+    'PSUBNKBEES.NS',   # PSU banks
+    'ITBEES.NS',       # IT
+    'PHARMABEES.NS',   # Pharma
+    'CPSEETF.NS',      # PSU (general)
+    'MIDCAPETF.NS',    # Midcap (proxy for Midcap Select)
+    'SMLCAP50.NS',     # Smallcap ETF (proxy for smallcap index)
+    'NIFTYBEES.NS',    # Benchmark ETF
+    'JUNIORBEES.NS',   # Nifty Next 50 ETF
+    'INFRABEES.NS',    # Infrastructure
+    'ENERGY.NS',       # Energy sector ETF
+]
+
+TABLE_NAMES = [
+    'etf_bankbees',
+    'etf_psubankbees',
+    'etf_itbees',
+    'etf_pharmabees',
+    'etf_cpse',
+    'etf_midcap',
+    'etf_smallcap',
+    'etf_niftybees',
+    'etf_juniorbees',
+    'etf_infrabees',
+    'etf_energy'
+]
+
+-----------------------------------------------
+
+
+
+

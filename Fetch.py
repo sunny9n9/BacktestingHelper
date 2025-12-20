@@ -9,7 +9,7 @@ import re
 SYMBOL = "^NSEI"
 START = "2019-01-01"
 END = None
-INTERVAL = "1d"
+INTERVAL = "1D"
 
 # temp 
 STATUS_SUCCESS = 1

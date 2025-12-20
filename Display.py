@@ -5,10 +5,10 @@ import pandas
 import pandas as pd
 import matplotlib.pyplot as plt
 import mplfinance as mpf
-import plotly.graph_objects as go # Should remove this later
+# import plotly.graph_objects as go # Should remove this later
 
 __all__ = [
-    'Overview', 'Candle', 'PlotlyCandle', 'PlotChange', 'PlotChange2', 'PlotChange3',
+    'Overview', 'Candle', 'PlotChange', 'PlotChange2', 'PlotChange3',
     'CompareAgainstIndex'
 ]
 
@@ -39,6 +39,7 @@ def Candle(OHLCV : pandas.DataFrame, Interval, Title="IDK MATE"):
     mpf.plot(OHLCV_resampled, type='candle', style='charles', title=Title, volume=show_volume, ylabel="Price", ylabel_lower="Volume" if show_volume else None)
 
 # FUKING DISAPPOINTMENT
+'''
 def PlotlyCandle(OHLCV, title="Something"):
     fig = go.Figure(data=[go.Candlestick(
         x=OHLCV.index,
@@ -53,6 +54,7 @@ def PlotlyCandle(OHLCV, title="Something"):
         title=title, xaxis_title="Date", yaxis_title="Price", xaxis_rangeslider_visible=False, template="plotly_white", height=600
     )
     fig.show()
+'''
 
 # INTRADAY CHANGE
 def PlotChange(OHLCV):
@@ -179,9 +181,9 @@ def PlotChange3(OHLCV: pd.DataFrame):
 #     This gives +6.79% cumulative gain (1 - 1.0679)
 #     """
 
-def CompareAgainstIndex(OHLCV, INDEX, datefrom, dateto):
-    index_domain = INDEX['Close'][datefrom : dateto]
-    symbol_domain = OHLCV['Close'][datefrom : dateto]
+def CompareAgainstIndex(OHLCV, INDEX, datefrom, dateto, field1='Close', field2='Close'):
+    index_domain = INDEX[field2][datefrom : dateto]
+    symbol_domain = OHLCV[field1][datefrom : dateto]
     # since both are going to be having different prices, let us compare percent chagne rather 
     index_domain = (index_domain - index_domain.iloc[0])/ index_domain.iloc[0] * 100 # i dont like decimals
     symbol_domain = (symbol_domain - symbol_domain.iloc[0])/ symbol_domain.iloc[0] * 100 
@@ -192,3 +194,4 @@ def CompareAgainstIndex(OHLCV, INDEX, datefrom, dateto):
     plt.grid(True)
     plt.title('Index vs Symbol')
     plt.show()
+

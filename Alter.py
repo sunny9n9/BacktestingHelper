@@ -1,5 +1,5 @@
 # Contains Signals/Indicators for use.
-# Can be added as a column to OHLCV chart for analysis
+# Can be used to add columns to OHLCV chart for analysis
 import pandas
 
 __all__ = [
@@ -8,8 +8,8 @@ __all__ = [
     'AvgDirIndex'
 ]
 
-def PercentChange(OHLCV : pandas.DataFrame):
-    SinceLastClose : pandas.Series = OHLCV["Close"].pct_change().fillna(0) * 100
+def PercentChange(OHLCV : pandas.DataFrame, field='Close'):
+    SinceLastClose : pandas.Series = OHLCV[field].pct_change().fillna(0) * 100
     SinceLastClose.index = OHLCV.index
     return SinceLastClose
 
