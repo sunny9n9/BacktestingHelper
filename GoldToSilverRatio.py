@@ -9,6 +9,11 @@ usd_inr = 'USDINR=X'
 # why tf are you returning Oz, WHY
 OZ_TO_G = 31.1034768
 
+def get_data():
+    Fetch(gold, period='max')
+    Fetch(silver, period='max')
+    Fetch(usd_inr, period='max')
+
 def make_df():
     df_gold = ReadCSV(gold)
     df_silver = ReadCSV(silver)
@@ -31,6 +36,7 @@ def make_df():
     
     print(cleaned['Silver_INR_SPOT'].head())
     return cleaned
+
 def plot(df):
     fig, axes = plt.subplots(3, 1, height_ratios=[3, 3, 2])
     
@@ -52,5 +58,6 @@ def random_stats(df):
     plt.show()
     CompareAgainstIndex(df, ReadCSV('^NSEI'), pandas.to_datetime('01-01-2010'), pandas.to_datetime('17-12-2025'), 'Gold_INR_SPOT')
 if __name__ == '__main__':
-    #plot(make_df())
-    random_stats(make_df())
+    #plot(make_df()) 
+    get_data()
+    plot(make_df())
